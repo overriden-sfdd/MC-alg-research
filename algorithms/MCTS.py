@@ -109,4 +109,5 @@ class MonteCarloTreeSearch(TreeBase):
         c = self.exploration_constant
         self.exploration_constant = 0.0
         node = self.select(node)
+        self.simulate(node)
         self.exploration_constant = c
