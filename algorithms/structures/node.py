@@ -4,6 +4,7 @@ from typing import Tuple, Optional, List, Callable
 
 from gymnasium.spaces import Discrete
 
+
 class NodeBase(ABC):
     """Abstract base class for a node in the tree."""
 

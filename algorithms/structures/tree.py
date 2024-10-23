@@ -1,6 +1,7 @@
 from .node import NodeBase
 from abc import ABC, abstractmethod
 
+
 class TreeBase(ABC):
     """Abstract base class for the tree."""
 
@@ -28,7 +29,7 @@ class TreeBase(ABC):
     def backpropagate(self, node: NodeBase, reward: float) -> None:
         """Backpropagation step: update the tree with the result of the simulation."""
         pass
-    
+
     @abstractmethod
     def inference(self, node: NodeBase) -> None:
         """Inference step: test the resultant model by replaying from a desired node."""

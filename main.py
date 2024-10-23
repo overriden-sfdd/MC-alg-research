@@ -2,10 +2,13 @@ import experiments.frozen_lake as frozen_lake
 from algorithms.MCTS import MonteCarloTreeSearch, MCTSNode
 from algorithms.utils.visualizer import generate_graph
 
-import random, argparse, math
+import random
+import argparse
+import math
 from typing import Optional
 
 from gymnasium.spaces import Discrete
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Global constants for MCTS.")
@@ -21,9 +24,10 @@ def parse_args():
                         help="Flag indicating whether to run inference for the resultant model or not")
     return parser.parse_args()
 
+
 def main():
     args = parse_args()
-    
+
     random.seed(42)
     frozen_lake.register_env()
     env = frozen_lake.init_env(args.renderer_mode)
@@ -33,7 +37,7 @@ def main():
     # Initialize root with 0 action, 0 reward, non-terminal state
     root = MCTSNode(initial_state, 0, 0.0, False, parent=None)
     MCTS = MonteCarloTreeSearch(root, env, args.c)
-    
+
     for i in range(steps):
         print(f"The step #{i} out of {steps}")
         env.reset()
@@ -43,7 +47,7 @@ def main():
 
     if (len(args.graph_filepath) > 0):
         generate_graph(root, args.graph_filepath)
-        
+
     if (args.inference):
         env.close()
         env = frozen_lake.init_env("human")
@@ -51,5 +55,6 @@ def main():
         MCTS.env = env
         MCTS.inference(root)
 
+
 if __name__ == "__main__":
-   main()
+    main()
