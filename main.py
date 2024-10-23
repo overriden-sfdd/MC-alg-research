@@ -1,29 +1,30 @@
 import experiments.frozen_lake as frozen_lake
-
-from algorithms.MCTS import MonteCarloTreeSearch
+from algorithms.MCTS import MonteCarloTreeSearch, MCTSNode
+from algorithms.utils.visualizer import generate_graph
 
 import random
+import copy
 
-def main():
-    random.seed(2)
+from gymnasium.spaces import Discrete
+
+def main():    
+    random.seed(42)
     env = frozen_lake.init_env()
     initial_state, _ = env.reset()
-    steps = 10000
-    monteCarloTreeSearch = MonteCarloTreeSearch(env, steps)
+    steps = 500
 
-    monteCarloTreeSearch.run(initial_state)
+    # Initialize root with 0 action, 0 reward, non-terminal state
+    root = MCTSNode(initial_state, 0, 0.0, False, parent=None)
+    MCTS = MonteCarloTreeSearch(root, env)
+    
+    for i in range(steps):
+        print(f"The step #{i} out of {steps}")
+        env.reset()
+        node = MCTS.forward()
+        reward = MCTS.simulate(node)
+        MCTS.backpropagate(node, reward)
 
-    # Execute the best action in the Frozen Lake environment
-    env.reset()
-    env.unwrapped.s = initial_state  # Set the environment state to the root state
-    new_state, reward, done, _, _ = env.step(best_action)
-
-    # Output the result
-    print(f"Initial state: {initial_state}")
-    print(f"Best action: {best_action}")
-    print(f"New state: {new_state}")
-    print(f"Reward: {reward}")
-    print(f"Done: {done}")
+    generate_graph(root)
 
 if __name__ == "__main__":
    main()

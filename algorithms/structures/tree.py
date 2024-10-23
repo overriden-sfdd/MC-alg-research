@@ -23,8 +23,3 @@ class TreeBase(ABC):
     def backpropagate(self, node: NodeBase, reward: float) -> None:
         """Backpropagation step: update the tree with the result of the simulation."""
         pass
-
-    @abstractmethod
-    def run(self, initial_state: int) -> int:
-        """Run the MCTS algorithm from the initial state."""
-        pass
