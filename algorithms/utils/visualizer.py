@@ -2,14 +2,17 @@ from algorithms.structures.node import NodeBase
 
 from typing import Optional
 
+import graphviz
 
-def generate_graph(self, root: NodeBase, path: str = "mcts_tree") -> None:
+
+def generate_graph(root: NodeBase, path: str = "mcts_tree") -> None:
     dot = graphviz.Digraph(comment='MCTS Tree')
 
     def add_node_to_graph(node: NodeBase, parent: Optional[NodeBase] = None, edge_label: Optional[str] = None) -> None:
-        node_label = f"""State: {node.state}\nVisits: {
-            node.visits}\nReward: {node.reward:.2f}"
-        node_id = f"node_{node.uid}"""
+        node_label = f"""State: {node.state}
+            Visits: {node.visits}
+            Reward: {node.reward:.2f}"""
+        node_id = f"node_{node.uid}"
         dot.node(node_id, label=node_label)
 
         if parent is not None:
