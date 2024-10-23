@@ -17,12 +17,15 @@ def parse_args():
                         help="Renderer mode for Gymnasium environment (e.g., 'human', 'rgb_array', or '')")
     parser.add_argument('--graph_filepath', type=str, default="",
                         help="Filepath to save the generated Graphviz tree. If the string is empty, no graph is generated (default: '')")
+    parser.add_argument('--inference', type=bool, default=False,
+                        help="Flag indicating whether to run inference for the resultant model or not")
     return parser.parse_args()
 
 def main():
     args = parse_args()
     
     random.seed(42)
+    frozen_lake.register_env()
     env = frozen_lake.init_env(args.renderer_mode)
     initial_state, _ = env.reset()
     steps = args.iterations
@@ -38,8 +41,15 @@ def main():
         reward = MCTS.simulate(node)
         MCTS.backpropagate(node, reward)
 
-    if (args.graph_filepath is not None):
+    if (len(args.graph_filepath) > 0):
         generate_graph(root, args.graph_filepath)
+        
+    if (args.inference):
+        env.close()
+        env = frozen_lake.init_env("human")
+        env.reset()
+        MCTS.env = env
+        MCTS.inference(root)
 
 if __name__ == "__main__":
    main()

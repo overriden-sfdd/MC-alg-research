@@ -67,7 +67,7 @@ class MonteCarloTreeSearch(TreeBase):
         return node
 
     def expand(self, node: NodeBase) -> Optional[NodeBase]:
-        actions_to_try = [action for action in range(self.env.action_space.n) if action not in node.children]
+        actions_to_try = [action for action in range(self.env.action_space.n) if action not in [child.action for child in node.children]]
         # Select an untried action and create a new child node
         action = random.choice(actions_to_try)    
         new_state, reward, terminal, _, _ = self.env.step(action)
@@ -83,12 +83,6 @@ class MonteCarloTreeSearch(TreeBase):
             if done:
                 return float(reward)
 
-    def backpropagate(self, node: NodeBase, reward: float) -> None:
-        # Update all parents with the gained reward
-        while node is not None:
-            node.update(reward)
-            node = node.parent
-
     def forward(self) -> NodeBase:
         node = self.root
         while not node.terminal:
@@ -99,3 +93,17 @@ class MonteCarloTreeSearch(TreeBase):
             node = self.select(node)
         
         return node
+
+    def backpropagate(self, node: NodeBase, reward: float) -> None:
+        # Update all parents with the gained reward
+        while node is not None:
+            node.update(reward)
+            node = node.parent
+            
+    def inference(self, node: NodeBase) -> None:
+        # Save the state to restore it later
+        c = self.exploration_constant
+        self.exploration_constant = 0.0
+        node = self.select(node)
+        print(f"node: {node}, terminal?: {node.terminal}, reward: {self.simulate(node)}")
+        self.exploration_constant = c
