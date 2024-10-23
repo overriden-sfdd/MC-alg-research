@@ -46,11 +46,11 @@ class MCTSNode(NodeBase):
                                                   self.performance)
 
 class MonteCarloTreeSearch(TreeBase):
-    def __init__(self, root: MCTSNode, env: Env[Discrete, Discrete]):
+    def __init__(self, root: MCTSNode, env: Env[Discrete, Discrete], exploration_constant: float):
         self.env = env
-        self.c: float = math.sqrt(2)
+        self.exploration_constant: float = exploration_constant
         self.root = root
-            
+
     @staticmethod
     def _score(c: float) -> Callable[[NodeBase],  List[float]]:
         def score(node: NodeBase) -> List[float]:
@@ -63,7 +63,7 @@ class MonteCarloTreeSearch(TreeBase):
 
     def select(self, node: NodeBase) -> NodeBase:
         while node.children:
-            node = node.best_child(self._score(self.c))
+            node = node.best_child(self._score(self.exploration_constant))
         return node
 
     def expand(self, node: NodeBase) -> Optional[NodeBase]:
