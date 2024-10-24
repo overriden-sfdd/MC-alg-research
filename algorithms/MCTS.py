@@ -65,9 +65,7 @@ class MonteCarloTreeSearch(TreeBase):
         return score
 
     def select(self, node: NodeBase) -> NodeBase:
-        while node.children:
-            node = node.best_child(self._score(self.exploration_constant))
-        return node
+            return node.best_child(self._score(self.exploration_constant))
 
     def expand(self, node: NodeBase) -> Optional[NodeBase]:
         actions_to_try = [action for action in range(self.env.action_space.n) if action not in [
